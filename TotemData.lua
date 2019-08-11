@@ -12,6 +12,28 @@ local WeaponImbues =
 	"Windfury Weapon"
 }
 
+function GetDefaultTotem(spellGroup)
+	if(spellGroup == SPELL_GROUP_IMBUE) then
+		return 8017, 1, nil
+	end
+
+	if(spellGroup == "Earth") then
+		return 8071, 4, 1518
+	end
+
+	if(spellGroup == "Fire") then
+		return 3599, 10, 1527
+	end
+
+	if(spellGroup == "Water") then
+		return 5394, 20, 96
+	end
+
+	if(spellGroup == "Air") then
+		return 8177, 30, 1531
+	end
+end
+
 local Earth =
 {
 	"Earthbind Totem",
@@ -79,9 +101,9 @@ function Yata:GatherTotemData()
 	
     self.TotemData = {}
     
-    --local multicastActions = { 133, 134, 135, 136 } -- Fire, Earth, Water, Air
-    --local totem1, totem2, totem3, totem4, totem5, totem6, totem7 
-    local name, rank, icon, globalId
+	local name, rank, icon, globalId
+	local defaultSpellId, defaultLevel, defaultQuestId
+	local earthFound, fireFound, waterFound, airFound, imbueFound = false
 	local count = 0
 	
     for k, spellName in ipairs(Earth) do
@@ -106,9 +128,11 @@ function Yata:GatherTotemData()
 			end
 		
 			table.insert(self.TotemData[name],totem)
+
+			earthFound = true
 		end
 	end
-	
+			
     for k, spellName in ipairs(Fire) do
 
 		--name, rank, icon, cost, _, _, _, _, _ = GetSpellInfo(globalId)
@@ -131,9 +155,11 @@ function Yata:GatherTotemData()
 			end
 		
 			table.insert(self.TotemData[name],totem)
+
+			fireFound = true
 		end
 	end
-
+	
     for k, spellName in ipairs(Water) do
 
 		--name, rank, icon, cost, _, _, _, _, _ = GetSpellInfo(globalId)
@@ -156,6 +182,8 @@ function Yata:GatherTotemData()
 			end
 		
 			table.insert(self.TotemData[name],totem)
+
+			waterFound = true
 		end
 	end
 
@@ -182,36 +210,38 @@ function Yata:GatherTotemData()
 			end
 		
 			table.insert(self.TotemData[name],totem)
+
+			airFound = true
 		end
 	end
 	
-    local multicastbase = 133
-    for k, spellId in ipairs(BlizzardCallSpells) do
-    	local totem = {}
-		totem.GlobalId = spellId
+    -- local multicastbase = 133
+    -- for k, spellId in ipairs(BlizzardCallSpells) do
+    -- 	local totem = {}
+	-- 	totem.GlobalId = spellId
 	    
-		name, _, icon, cost, _, _, _, _, _ = GetSpellInfo(totem.GlobalId)
+	-- 	name, _, icon, cost, _, _, _, _, _ = GetSpellInfo(totem.GlobalId)
 		
-		-- Get again by name to make sure this character knows the spell
-		--name, _, icon, cost, _, _, _, _, _ = GetSpellInfo(name)
+	-- 	-- Get again by name to make sure this character knows the spell
+	-- 	--name, _, icon, cost, _, _, _, _, _ = GetSpellInfo(name)
 
-		if (name) then
-			totem.Name = name
-			totem.Texture = icon
-			totem.SpellGroup = SPELL_GROUP_CALL
-			totem.CallIndex = k
-			totem.CallActionBase = multicastbase + ((k - 1) * 4)
+	-- 	if (name) then
+	-- 		totem.Name = name
+	-- 		totem.Texture = icon
+	-- 		totem.SpellGroup = SPELL_GROUP_CALL
+	-- 		totem.CallIndex = k
+	-- 		totem.CallActionBase = multicastbase + ((k - 1) * 4)
 			
-			if not self.TotemData[totem.Name] then
-				self.TotemData[totem.Name] = {}
-				table.insert(self.TotemData, totem.Name)
-			end
+	-- 		if not self.TotemData[totem.Name] then
+	-- 			self.TotemData[totem.Name] = {}
+	-- 			table.insert(self.TotemData, totem.Name)
+	-- 		end
 			
-			table.insert(self.TotemData[totem.Name], totem)
+	-- 		table.insert(self.TotemData[totem.Name], totem)
 					
-			count = count + 1
-		end
-	end
+	-- 		count = count + 1
+	-- 	end
+	-- end
 		
 	for k, spellName in ipairs(WeaponImbues) do
     	local totem = {}
@@ -235,8 +265,162 @@ function Yata:GatherTotemData()
 			table.insert(self.TotemData[totem.Name], totem)
 					
 			count = count + 1
+
+			imbueFound = true
 		end
 	end
-	
+
+	if(not earthFound) then
+		defaultSpellId, defaultLevel, defaultQuestId = GetDefaultTotem("Earth")
+
+		--name, rank, icon, cost, _, _, _, _, _ = GetSpellInfo(globalId)
+		name, rank, icon, _, _, _, globalId = GetSpellInfo(defaultSpellId)
+
+		if (name) then
+			count = count + 1
+			local totem = {}
+			totem.GlobalId = globalId
+			totem.Name = name
+			totem.Texture = icon
+			totem.ActionId = globalId
+			
+			totem.IsDefault = true
+			totem.Level = defaultLevel
+			totem.Quest = defaultQuestId
+
+			totem.SpellGroup = "Earth" 
+			totem.Slot = ElementsMap["Earth"]
+			
+			if (not self.TotemData[name]) then
+				self.TotemData[name] = {}
+				table.insert(self.TotemData, name)
+			end
+		
+			table.insert(self.TotemData[name],totem)
+		end
+	end
+
+	if(not fireFound) then
+		defaultSpellId, defaultLevel, defaultQuestId = GetDefaultTotem("Fire")
+
+		--name, rank, icon, cost, _, _, _, _, _ = GetSpellInfo(globalId)
+		name, rank, icon, _, _, _, globalId = GetSpellInfo(defaultSpellId)
+
+		if (name) then
+			count = count + 1
+			local totem = {}
+			totem.GlobalId = globalId
+			totem.Name = name
+			totem.Texture = icon
+			totem.ActionId = globalId
+			
+			totem.IsDefault = true
+			totem.Level = defaultLevel
+			totem.Quest = defaultQuestId
+
+			totem.SpellGroup = "Fire" 
+			totem.Slot = ElementsMap["Fire"]
+			
+			if (not self.TotemData[name]) then
+				self.TotemData[name] = {}
+				table.insert(self.TotemData, name)
+			end
+		
+			table.insert(self.TotemData[name],totem)
+		end
+	end
+
+	if(not waterFound) then
+		defaultSpellId, defaultLevel, defaultQuestId = GetDefaultTotem("Water")
+
+		--name, rank, icon, cost, _, _, _, _, _ = GetSpellInfo(globalId)
+		name, rank, icon, _, _, _, globalId = GetSpellInfo(defaultSpellId)
+
+		if (name) then
+			count = count + 1
+			local totem = {}
+			totem.GlobalId = globalId
+			totem.Name = name
+			totem.Texture = icon
+			totem.ActionId = globalId
+			
+			totem.IsDefault = true
+			totem.Level = defaultLevel
+			totem.Quest = defaultQuestId
+
+			totem.SpellGroup = "Water" 
+			totem.Slot = ElementsMap["Water"]
+			
+			if (not self.TotemData[name]) then
+				self.TotemData[name] = {}
+				table.insert(self.TotemData, name)
+			end
+		
+			table.insert(self.TotemData[name],totem)
+		end
+	end
+
+	if(not airFound) then
+		defaultSpellId, defaultLevel, defaultQuestId = GetDefaultTotem("Air")
+
+		--name, rank, icon, cost, _, _, _, _, _ = GetSpellInfo(globalId)
+		name, rank, icon, _, _, _, globalId = GetSpellInfo(defaultSpellId)
+
+		if (name) then
+			count = count + 1
+			local totem = {}
+			totem.GlobalId = globalId
+			totem.Name = name
+			totem.Texture = icon
+			totem.ActionId = globalId
+			
+			totem.IsDefault = true
+			totem.Level = defaultLevel
+			totem.Quest = defaultQuestId
+
+			totem.SpellGroup = "Air" 
+			totem.Slot = ElementsMap["Air"]
+			
+			if (not self.TotemData[name]) then
+				self.TotemData[name] = {}
+				table.insert(self.TotemData, name)
+			end
+		
+			table.insert(self.TotemData[name],totem)
+		end
+	end
+
+	if(not imbueFound) then
+		defaultSpellId, defaultLevel, defaultQuestId = GetDefaultTotem(SPELL_GROUP_IMBUE)
+
+		local totem = {}
+	    
+		--name, _, icon, cost, _, _, _, _, _ = GetSpellInfo(spellId)
+
+		-- Get again by name to make sure this character knows the spell
+		name, rank, icon, _, _, _, globalId = GetSpellInfo(defaultSpellId)
+
+		if(name) then
+			totem.GlobalId = globalId
+			totem.Name = name
+			totem.Texture = icon
+			totem.SpellGroup = SPELL_GROUP_IMBUE
+			
+			totem.IsDefault = true
+			totem.Level = defaultLevel
+			totem.Quest = defaultQuestId
+
+			if not self.TotemData[totem.Name] then
+				self.TotemData[totem.Name] = {}
+				table.insert(self.TotemData, totem.Name)
+			end
+			
+			table.insert(self.TotemData[totem.Name], totem)
+					
+			count = count + 1
+		end
+	end
+
+
     self.TotemData.Count = count
 end

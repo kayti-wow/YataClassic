@@ -12,7 +12,7 @@ TOTEM_SET_SECONDARY_DEFAULT = "Secondary Default"
 SPELL_GROUP_CALL = "CallSpell"
 SPELL_GROUP_IMBUE = "Imbue"
 
-SpellGroups = {"Earth", "Air", "Water", "Fire", SPELL_GROUP_CALL, SPELL_GROUP_IMBUE}
+SpellGroups = {SPELL_GROUP_IMBUE, "Earth", "Fire", "Water", "Air", SPELL_GROUP_CALL}
 ElementsMap = {["Fire"] = 1, ["Earth"] = 2, ["Water"] = 3, ["Air"] = 4}
 
 local defaults = {
@@ -55,8 +55,8 @@ local defaults = {
 		InitialSpec = nil,
 		MacroEnabled = true,
 		BarPosition = { 
-			x = 110,
-			y = 115
+			x = 0,
+			y = 0
 		},
 	},
 };

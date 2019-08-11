@@ -64,9 +64,16 @@ end
 
 function Yata.Button:Create(id, parent, totem)
 	local button = Yata.Button:CreateBase(id,parent)
-	
+
+
 	button.Icon:SetTexture(totem.Texture)
-	
+
+	if(totem.IsDefault) then
+		button.Icon:SetDesaturated(true)
+	else 
+		button.Icon:SetDesaturated(false)
+	end
+
 	button.Totem = totem
 	
 	if(totem.ActionId) then
@@ -148,8 +155,8 @@ function Yata.Button:Create(id, parent, totem)
 	button:SetAttribute("globalid", totem.GlobalId)
 	
 	if totem.GlobalId and totem.ActionId and totem.Slot then
-		button:SetAttribute("shift-type2", "spell")
-		button:SetAttribute("shift-spell2", GetSpellInfo(36936)) -- Totemic Call
+		-- button:SetAttribute("shift-type2", "spell")
+		-- button:SetAttribute("shift-spell2", GetSpellInfo(36936)) -- Totemic Call
 
 		local setcallbutton = Yata.CurrentDb.ButtonSetCallKey
 		local prefix = ""
@@ -157,51 +164,51 @@ function Yata.Button:Create(id, parent, totem)
 			prefix = setcallbutton.."-"
 		end
 
-		button:SetAttribute(prefix.."type1", "multispell")
-		button:SetAttribute("action", button.Totem.ActionId)
-		button:SetAttribute(prefix.."spell1", totem.GlobalId)
+		-- button:SetAttribute(prefix.."type1", "multispell")
+		-- button:SetAttribute("action", button.Totem.ActionId)
+		-- button:SetAttribute(prefix.."spell1", totem.GlobalId)
 
-		button:SetAttribute("type2", "macro")
-		button:SetAttribute("macrotext2", "/script DestroyTotem("..totem.Slot..")")
+		-- button:SetAttribute("type2", "macro")
+		-- button:SetAttribute("macrotext2", "/script DestroyTotem("..totem.Slot..")")
 		
 		button:SetAttribute("element", totem.SpellGroup)
 		button:SetAttribute("actionid", totem.ActionId)
 	end
 	
-	if totem.SpellGroup == SPELL_GROUP_CALL then
-		button:SetAttribute("*type1", "spell")
-		button:SetAttribute("*spell1", totem.Name)
+	-- if totem.SpellGroup == SPELL_GROUP_CALL then
+	-- 	button:SetAttribute("*type1", "spell")
+	-- 	button:SetAttribute("*spell1", totem.Name)
 		
-		local manualswaptocallkey = Yata.CurrentDb.ManualSwapToCallKey
-		local prefix = ""
-		if(manualswaptocallkey ~= "none") then
-			prefix = manualswaptocallkey.."-"
-		end
+	-- 	local manualswaptocallkey = Yata.CurrentDb.ManualSwapToCallKey
+	-- 	local prefix = ""
+	-- 	if(manualswaptocallkey ~= "none") then
+	-- 		prefix = manualswaptocallkey.."-"
+	-- 	end
 		
-		button:SetAttribute(prefix.."type2", "attribute")
-		button:SetAttribute(prefix.."attribute-name2", "manualcall")
-		button:SetAttribute(prefix.."attribute-value2", totem.CallActionBase)
-		button:SetAttribute(prefix.."attribute-frame2", parent:GetParent())
+	-- 	button:SetAttribute(prefix.."type2", "attribute")
+	-- 	button:SetAttribute(prefix.."attribute-name2", "manualcall")
+	-- 	button:SetAttribute(prefix.."attribute-value2", totem.CallActionBase)
+	-- 	button:SetAttribute(prefix.."attribute-frame2", parent:GetParent())
 		
-		button:SetAttribute("type2", "spell")
-		button:SetAttribute("spell2", GetSpellInfo(36936)) -- Totemic Call
+	-- 	button:SetAttribute("type2", "spell")
+	-- 	button:SetAttribute("spell2", GetSpellInfo(36936)) -- Totemic Call
 				
-		button:SetAttribute("iscall", true)
-		button:SetAttribute("callindex", totem.CallIndex)
-		button:SetAttribute("callaction", totem.CallActionBase)
-	end
+	-- 	button:SetAttribute("iscall", true)
+	-- 	button:SetAttribute("callindex", totem.CallIndex)
+	-- 	button:SetAttribute("callaction", totem.CallActionBase)
+	-- end
 	
 	if totem.SpellGroup == SPELL_GROUP_IMBUE then
 		button:SetAttribute("type1", "spell")
 		button:SetAttribute("spell*", totem.Name)
 	
-		--button:SetAttribute("alt-type1", "cancelaura")
-		button:SetAttribute("type2", "cancelaura")
+		-- button:SetAttribute("alt-type1", "cancelaura")
+		-- button:SetAttribute("type2", "cancelaura")
 		
-		--button:SetAttribute("alt-spell1", ATTRIBUTE_NOOP)
+		-- button:SetAttribute("alt-spell1", ATTRIBUTE_NOOP)
 		--button:SetAttribute("alt-spell2", ATTRIBUTE_NOOP)
 		
-		button:SetAttribute("target-slot1", GetInventorySlotInfo("MainHandSlot"))
+		button:SetAttribute("*target-slot1", GetInventorySlotInfo("MainHandSlot"))
 		--button:SetAttribute("*target-slot2", GetInventorySlotInfo("SecondaryHandSlot"))
 	end
 	
@@ -305,9 +312,9 @@ function Button:PostClick()
 	if self.Totem.SpellGroup ~= SPELL_GROUP_IMBUE and self.Totem.SpellGroup ~= SPELL_GROUP_CALL then -- Only bother with totems
 		Yata.Bar:EditMacro(true,nil,nil)
 		
-		if IsModifiedClick(Yata.CurrentDb.ButtonSetCallKey) then
-			Yata.Bar:UpdateCallIndicators()
-		end
+		-- if IsModifiedClick(Yata.CurrentDb.ButtonSetCallKey) then
+		-- 	Yata.Bar:UpdateCallIndicators()
+		-- end
 	elseif self.Totem.SpellGroup == SPELL_GROUP_CALL then
 		Yata.Bar:UpdateCallIndicators()
 	end	
@@ -342,22 +349,22 @@ function Button:SetOnClickScript(autobutton)
 			end
 		]],
 		[[
-			if button == "LeftButton" then
-				key = bar:GetAttribute("setcallkey")
-				if control:Run(checkModifier,key) then
-					bar:SetAttribute("updateindicators", true)
-				else
-					key = bar:GetAttribute("noswapkey")
-					if not control:Run(checkModifier,key) and bar:GetAttribute("autoswap") == true then
-						control:Run(swapButton)
-					end
-				end
+			-- if button == "LeftButton" then
+			-- 	key = bar:GetAttribute("setcallkey")
+			-- 	if control:Run(checkModifier,key) then
+			-- 		bar:SetAttribute("updateindicators", true)
+			-- 	else
+			-- 		key = bar:GetAttribute("noswapkey")
+			-- 		if not control:Run(checkModifier,key) and bar:GetAttribute("autoswap") == true then
+			-- 			control:Run(swapButton)
+			-- 		end
+			-- 	end
 								
-				if self:GetAttribute("iscall") == true then
-					local base = self:GetAttribute("callaction")	
-					bar:SetAttribute("autocall", base)
-				end
-			end
+			-- 	if self:GetAttribute("iscall") == true then
+			-- 		local base = self:GetAttribute("callaction")	
+			-- 		bar:SetAttribute("autocall", base)
+			-- 	end
+			-- end
 		]] )
 end
 
@@ -468,6 +475,22 @@ function Button:SetTooltip()
 		GameTooltip:SetHyperlink("spell:"..self.Totem.GlobalId)
 	end
 	
+	if(self.Totem.IsDefault) then
+		if(Yata.CurrentDb.Tooltip == 3) then
+			GameTooltip:AddLine(" ", 0,0,0,false)
+		end
+
+		if(self.Totem.Quest) then
+			GameTooltip:AddLine("Requires ["..self.Totem.Level.."] Call of "..self.Totem.SpellGroup, 1, 0.1,0.1, true)
+		else 
+			if(UnitLevel("player")==self.Totem.Level) then
+				GameTooltip:AddLine("Visit your trainer to learn this spell", 0.2, 1, 0.2, true)
+			else
+				GameTooltip:AddLine("Learned at level "..self.Totem.Level, 1, 0.3,0.3, true)
+			end
+		end
+	end
+
 	if self.Totem.SpellGroup == "CallSpell" and Yata.CurrentDb.MultiTooltip == true then
 		
 		GameTooltip:AddLine(" ", 0,0,0,false)
