@@ -1,0 +1,30 @@
+## Author: Kaytikat (Originally by Tornhoof)
+## DefaultState: enabled
+## Interface: 11302
+## LoadManagers: AddonLoader
+## Notes: Shaman totem bar
+## Notes-zhTW: 提供薩滿方面施放圖騰和計時的功能。
+## OptionalDeps: Ace3, ButtonFacade, LibSharedMedia-3.0, LibKeyBound-1.0, LibBars-1.0
+## SavedVariablesPerCharacter: YataDB
+## Title: Yata Classic
+## Version: 5.0.0
+embeds.xml
+Libs\LibDataBroker-1.1.lua
+Localization\enUS.lua
+Localization\ruRU.lua
+Localization\frFR.lua
+Localization\deDE.lua
+Localization\zhTW.lua
+Localization\koKR.lua
+Localization\zhCN.lua
+Localization\esMX.lua
+Localization\esES.lua
+Core.lua
+TotemBar.lua
+Options.lua
+TotemButton.lua
+Header.lua
+TotemData.lua
+Timer.lua
+TotemSets.lua
+TotemButtonLayoutEditor.lua
